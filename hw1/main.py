@@ -1,4 +1,5 @@
 import re;
+import sys;
 paraRegex = re.compile(r"<P ID=\d+");
 puncRegex = re.compile(r"\'|\"|\,|\.|\?|\!|\(|\)");
 currentParagraph = 0;
@@ -8,6 +9,7 @@ lexicon = [];
 lineCount = 0;
 
 def computeLine(line):
+    global currentWords;
     cleanArr = sanitize(line);
     for word in cleanArr:
         lexify(word);
@@ -15,8 +17,8 @@ def computeLine(line):
     return;
 
 def sanitize(line):
+    global currentParagraph;
     if(paraRegex.match(line) or line == "</P>"):
-        global currentParagraph;
         currentParagraph += 1;
         return [];
     line = puncRegex.sub('',line);
@@ -65,7 +67,7 @@ with open("caesar-polo-esau.txt", encoding="latin1") as f:
     for line in f:
         lineCount += 1;
         computeLine(line);
-        msg = "{:.2f}".format(100/123)+"\n";
+        msg = "{:.2f}".format((lineCount/4565.49))+"\n";
         sys.stdout.write(msg); 
         sys.stdout.flush();
         sys.stdout.write('\r' + ' '*len(msg));

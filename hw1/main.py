@@ -83,7 +83,8 @@ def report():
     print(str(500) + ": '" + cur["text"] + "' COUNT: " + str(cur["totalCount"]) + " DOCUMENT COUNT: "  + str(cur["docCount"]));
     cur = lexicon[999];
     print(str(1000) + ": '" + cur["text"] + "' COUNT: " + str(cur["totalCount"]) + " DOCUMENT COUNT: "  + str(cur["docCount"]));
-    print(end - begin);
+    finalTime = end - begin
+    print(str(finalTime) + " sec ~ " + str(finalTime/60) + " minutes");
     return;
 
 with open("caesar-polo-esau.txt", encoding="latin1") as f:

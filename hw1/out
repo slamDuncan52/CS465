@@ -1,8 +1,9 @@
 Total Paragraphs: 10840
 Total Words: 6541642
+Total Unique Words: 63190
 Total Words In Only One Document: 39805
-Percentage Of Words In Only One Document: 0.006084863708530672
-Top Words: 
+Percentage Of Such Words: 0.006084863708530672
+Top Words:
 1: 'i' COUNT: 547988 DOCUMENT COUNT: 10304
 2: 'a' COUNT: 388576 DOCUMENT COUNT: 10312
 3: 'of' COUNT: 126360 DOCUMENT COUNT: 10372
@@ -26,4 +27,4 @@ Top Words:
 100: 'after' COUNT: 1868 DOCUMENT COUNT: 1578
 500: 'believed' COUNT: 422 DOCUMENT COUNT: 376
 1000: 'goals' COUNT: 207 DOCUMENT COUNT: 177
-
+2594.136557 sec ~ 43.23560928333333 minutes

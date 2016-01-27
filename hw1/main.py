@@ -1,12 +1,16 @@
 import re;
 import sys;
+import time;
 paraRegex = re.compile(r"<P ID=\d+");
-puncRegex = re.compile(r"\'|\"|\,|\.|\?|\!|\(|\)");
+puncRegex = re.compile(r"\'|\"|\,|\.|\?|\!|\(|\)|\&|\-|\d");
 currentParagraph = 0;
 currentWords = 0;
 currentUnique = 0;
 lexicon = [];
 lineCount = 0;
+
+def hasNumbers(inputString):
+   return any(char.isdigit() for char in inputString) 
 
 def computeLine(line):
     global currentWords;
@@ -18,30 +22,36 @@ def computeLine(line):
 
 def sanitize(line):
     global currentParagraph;
-    if(paraRegex.match(line) or line == "</P>"):
+    if(paraRegex.search(line) or line == "</P>"):
         currentParagraph += 1;
         return [];
-    line = puncRegex.sub('',line);
+    #line = puncRegex.sub('',line);
     line = line.lower();
     arr = line.split();
+    arr = [a for a in arr if  puncRegex.search(a) == None];
     return arr;
 
 def lexify(word):
-    thisWord = next((item for item in lexicon if item["text"] == word),{"wordId":0,"text":word,"totalCount":1,"docCount":1,"docList":None});
-    if(thisWord["wordId"] == 0):
+    global lexicon;
+    if((len(word) == 0) or (len(word) == 1 and not(word == "i" or word == "a"))):
+        return;
+    thisWord = next((item for item in lexicon if item["text"] == word),{"wordId":-1,"text":word,"totalCount":1,"docCount":1,"docList":None});
+    if(thisWord["wordId"] == -1):
         thisWord["wordId"] = len(lexicon);
         thisWord["docList"] = [currentParagraph];
         lexicon.append(thisWord);
+        #lexicon = sorted(lexicon, key = lambda word: word["text"]);
     else:
-        thisWord["totalCount"] += 1;
+        lexicon[thisWord["wordId"]]["totalCount"] += 1;
         if(not(currentParagraph in thisWord["docList"])):
-            thisWord["docList"].append(currentParagraph);
-            thisWord["docCount"] += 1;
-        lexicon[thisWord["wordId"]] = thisWord;
+            lexicon[thisWord["wordId"]]["docList"].append(currentParagraph);
+            lexicon[thisWord["wordId"]]["docCount"] += 1;
     return;
 
 def organize():
-    sorted(lexicon, key = lambda word: word["totalCount"]);
+    global currentUnique;
+    global lexicon;
+    lexicon = sorted(lexicon, key = lambda word: word["totalCount"], reverse=True);
     rare = [item for item in lexicon if item["docCount"] == 1];
     currentUnique = len(rare);
     return;
@@ -52,25 +62,24 @@ def report():
     print("Total Words In Only One Document: " + str(currentUnique));
     print("Percentage Of Such Words: " + str(currentUnique / currentWords));
     print("Top Words: ");
-    for num in range(0,19):
+    for num in range(0,20):
         cur = lexicon[num];
-        print(str(num+1) + ": " + cur["text"] + " count: " + cur["totalCount"] + " document count: "  + cur["docCount"]);
+        print(str(num+1) + ": '" + cur["text"] + "' COUNT: " + str(cur["totalCount"]) + " DOCUMENT COUNT: "  + str(cur["docCount"]));
     cur = lexicon[99];
-    print(str(num+1) + ": " + cur["text"] + " count: " + cur["totalCount"] + " document count: "  + cur["docCount"]);
+    print(str(100) + ": '" + cur["text"] + "' COUNT: " + str(cur["totalCount"]) + " DOCUMENT COUNT: "  + str(cur["docCount"]));
     cur = lexicon[499];
-    print(str(num+1) + ": " + cur["text"] + " count: " + cur["totalCount"] + " document count: "  + cur["docCount"]);
+    print(str(500) + ": '" + cur["text"] + "' COUNT: " + str(cur["totalCount"]) + " DOCUMENT COUNT: "  + str(cur["docCount"]));
     cur = lexicon[999];
-    print(str(num+1) + ": " + cur["text"] + " count: " + cur["totalCount"] + " document count: "  + cur["docCount"]);
+    print(str(1000) + ": '" + cur["text"] + "' COUNT: " + str(cur["totalCount"]) + " DOCUMENT COUNT: "  + str(cur["docCount"]));
+    print(end - begin);
     return;
 
 with open("caesar-polo-esau.txt", encoding="latin1") as f:
+    begin = time.clock();
     for line in f:
         lineCount += 1;
         computeLine(line);
-        msg = "{:.2f}".format((lineCount/4565.49))+"\n";
-        sys.stdout.write(msg); 
-        sys.stdout.flush();
-        sys.stdout.write('\r' + ' '*len(msg));
-        sys.stdout.flush();
+        print(lineCount/456549);
 organize();
+end = time.clock();
 report();

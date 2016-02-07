@@ -13,48 +13,49 @@ public class Main
     
    public static void main(String [] args)
    {
-   TreeMap postingsList = new TreeMap();
-      File inFile = new File(args[0]);
-      fileScan(inFile, postingsList);
+      try{
+         TreeMap postingsList = new TreeMap();
+         File inFile = new File(args[0]);
+         fileScan(inFile, postingsList);
+         writeToDisk(postingsList);
+      }
+      catch(Exception ex)
+      {
+         System.err.println(ex);
+      }
    }
 
-   public static void fileScan(File corpus, TreeMap postingsList)
+   public static void fileScan(File corpus, TreeMap postingsList) throws Exception
    {
-   try{
-      Scanner sc = new Scanner(corpus);
+      BufferedReader br = new BufferedReader(new FileReader(corpus));
       int curDoc = 0;
       String docText = "";
       String curLine = "";
       Pattern endDoc = Pattern.compile("</P>");
       Matcher docCheck;
-      while(sc.hasNextLine())
+      br.readLine();
+      while((curLine = br.readLine()) != null)
       {
-         curLine = sc.nextLine();
          docCheck = endDoc.matcher(curLine);
          if(docCheck.find())
-         {
+         { 
+            System.out.println(curDoc);        
             docProcess(docText, curDoc, postingsList);
             curDoc++;
             docText = "";
-            sc.nextLine();
+            br.readLine();
          } 
          else
          {
-            docText.concat(curLine);
+            docText = docText.concat(curLine);
          }
       }
    }
-   catch(Exception ex)
-   {
-   System.err.println(ex);
-   }
-}
    public static void docProcess(String body, int docNum, TreeMap postingsList)
    {
       String validToken = "";
       int validTokenHash = validToken.hashCode();
       int freq = 0;
-   
       catalogueToken(validTokenHash, docNum, freq, postingsList);
    }
 
@@ -87,46 +88,46 @@ public class Main
    }
    
    public static byte[] read(String aInputFileName){
-    System.out.println("Reading in binary file named : " + aInputFileName);
-    File file = new File(aInputFileName);
-    System.out.println("File size: " + file.length());
-    byte[] result = new byte[(int)file.length()];
-    try {
-      InputStream input = null;
+    //System.out.println("Reading in binary file named : " + aInputFileName);
+      File file = new File(aInputFileName);
+    //System.out.println("File size: " + file.length());
+      byte[] result = new byte[(int)file.length()];
       try {
-        int totalBytesRead = 0;
-        input = new BufferedInputStream(new FileInputStream(file));
-        while(totalBytesRead < result.length){
-          int bytesRemaining = result.length - totalBytesRead;
-          //input.read() returns -1, 0, or more :
-          int bytesRead = input.read(result, totalBytesRead, bytesRemaining); 
-          if (bytesRead > 0){
-            totalBytesRead = totalBytesRead + bytesRead;
-          }
-        }
-        /*
+         InputStream input = null;
+         try {
+            int totalBytesRead = 0;
+            input = new BufferedInputStream(new FileInputStream(file));
+            while(totalBytesRead < result.length){
+               int bytesRemaining = result.length - totalBytesRead;
+            //input.read() returns -1, 0, or more :
+               int bytesRead = input.read(result, totalBytesRead, bytesRemaining); 
+               if (bytesRead > 0){
+                  totalBytesRead = totalBytesRead + bytesRead;
+               }
+            }
+         /*
          the above style is a bit tricky: it places bytes into the 'result' array; 
          'result' is an output parameter;
          the while loop usually has a single iteration only.
-        */
-        System.out.println("Num bytes read: " + totalBytesRead);
+         */
+         //System.out.println("Num bytes read: " + totalBytesRead);
+         }
+         finally {
+         //System.out.println("Closing input stream.");
+            input.close();
+         }
       }
-      finally {
-        System.out.println("Closing input stream.");
-        input.close();
+      catch (FileNotFoundException ex) {
+      //System.out.println("File not found.");
       }
-    }
-    catch (FileNotFoundException ex) {
-      System.out.println("File not found.");
-    }
-    catch (IOException ex) {
-      System.out.println(ex);
-    }
-    return result;
-  }
+      catch (IOException ex) {
+      //System.out.println(ex);
+      }
+      return result;
+   }
   
    public static void write(byte[] aInput, String aOutputFileName){
-      System.out.println("Writing binary file...");
+      //System.out.println("Writing binary file...");
       try {
          OutputStream output = null;
          try {
@@ -138,10 +139,10 @@ public class Main
          }
       }
       catch(FileNotFoundException ex){
-         System.err.println("File not found.");
+         //System.err.println("File not found.");
       }
       catch(IOException ex){
-         System.err.println(ex);
+         //System.err.println(ex);
       }
    }
 

@@ -18,6 +18,12 @@ public class Main
          File inFile = new File(args[0]);
          fileScan(inFile, postingsList);
          writeToDisk(postingsList);
+         retreiveData("Francisco", true);
+         retreiveData("midway", true);
+         retreiveData("paddy", true);
+         retreiveData("Kremlin", false);
+         retreiveData("KGB", false);
+         retreiveData("Khrushchev", false);
       }
       catch(Exception ex)
       {
@@ -40,23 +46,44 @@ public class Main
          if(docCheck.find())
          { 
             System.out.println(curDoc);        
-            docProcess(docText, curDoc, postingsList);
+            docProcess(docText.split(" "), curDoc, postingsList);
             curDoc++;
             docText = "";
             br.readLine();
          } 
          else
          {
-            docText = docText.concat(curLine);
+            docText = docText.concat(" ").concat(curLine);
          }
       }
    }
-   public static void docProcess(String body, int docNum, TreeMap postingsList)
+   public static void docProcess(String[] body, int docNum, TreeMap postingsList)
    {
       String validToken = "";
       int validTokenHash = validToken.hashCode();
-      int freq = 0;
-      catalogueToken(validTokenHash, docNum, freq, postingsList);
+      int freq = 1;
+      int count = 0;
+      int[] bodyHash = new int[body.length];
+      for(count = 0; count < body.length; count++)
+      {
+         bodyHash[count] = body[count].hashCode();
+      }
+      Arrays.sort(bodyHash);
+      count = 0;
+      while(count < bodyHash.length)
+      {
+         if((count+1 < bodyHash.length) && (bodyHash[count] == bodyHash[count+1]))
+         {
+            freq++;
+            count++;
+         } 
+         else
+         {
+            catalogueToken(bodyHash[count], docNum, freq, postingsList);
+            freq = 1;
+            count++;
+         }
+      }
    }
 
    public static void catalogueToken(int hashToken, int docNum, int tokenFreq, TreeMap postingsList)
@@ -77,14 +104,24 @@ public class Main
       write(results, "invList");
    }
 
-   public static void retreiveData(String query) throws Exception
+   public static void retreiveData(String query, boolean freqAndPost) throws Exception
    {
       TreeMap postings = new TreeMap();
       LinkedList data = new LinkedList();
       byte[] invListBytes = read("invList");
       int queryHash = query.hashCode();
+      int[] tempHolder = new int[2];
       postings = (TreeMap)deserialize(invListBytes);
       data = (LinkedList)postings.get(queryHash);
+      System.out.println("Document Frequency: "+ data.size());
+      if(freqAndPost)
+      {
+         for(Object cur: data)
+         {
+            tempHolder = (int[])cur;
+            System.out.println("Posting for document " + tempHolder[0] + " appearing " + tempHolder[1] + " times");
+         }
+      }
    }
    
    public static byte[] read(String aInputFileName){

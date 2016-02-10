@@ -18,6 +18,7 @@ public class Main
          File inFile = new File(args[0]);
          fileScan(inFile, postingsList);
          writeToDisk(postingsList);
+         System.out.println("Unique words: " + postingsList.size());
          retreiveData("Francisco", true);
          retreiveData("midway", true);
          retreiveData("paddy", true);
@@ -35,6 +36,7 @@ public class Main
    {
       BufferedReader br = new BufferedReader(new FileReader(corpus));
       int curDoc = 0;
+      int totalWords = 0;
       String docText = "";
       String curLine = "";
       Pattern endDoc = Pattern.compile("</P>");
@@ -46,6 +48,7 @@ public class Main
          if(docCheck.find())
          { 
             docProcess(docText.split(" "), curDoc, postingsList);
+            totalWords += docText.split(" ").length;
             curDoc++;
             docText = "";
             br.readLine();
@@ -55,6 +58,9 @@ public class Main
             docText = docText.concat(" ").concat(curLine);
          }
       }
+      curDoc--;
+      System.out.println("Total Number of Docs: " + curDoc);
+      System.out.println("Total Number of Words: " + totalWords);
    }
    public static void docProcess(String[] body, int docNum, TreeMap postingsList)
    {

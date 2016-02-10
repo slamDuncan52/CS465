@@ -1,0 +1,45 @@
+Roughly, my algorithm was similar to the previous assignment, but with smarter data structures.
+I add lines to a document until I find the end, then split it into an array of terms which I hash, 
+sort, and store in a tree map. Finally, I serialize the Treemap and write it to a binary file,
+which I can deserialize and read to query it for data.
+My inverted file is a Java TreeMap, which is fast and balanced. I store an int for the term hash,
+as well as a linked list of document numbers and frequencies.
+
+Collection Data:
+Number of Documents: 10839
+Number of Unique Terms: 189257
+Total number of Terms: 7165903
+Size of original doc: 24,748,677 bytes
+Size of inverted list file: 37,998,382 bytes
+
+Data For: Francisco
+Document Frequency: 9
+Posting for document 9506 appearing 1 times
+Posting for document 9505 appearing 1 times
+Posting for document 8161 appearing 1 times
+Posting for document 7135 appearing 1 times
+Posting for document 7133 appearing 1 times
+Posting for document 7123 appearing 1 times
+Posting for document 7102 appearing 1 times
+Posting for document 7090 appearing 1 times
+Posting for document 1029 appearing 1 times
+Data For: midway
+Document Frequency: 6
+Posting for document 8803 appearing 1 times
+Posting for document 6121 appearing 1 times
+Posting for document 4765 appearing 1 times
+Posting for document 803 appearing 1 times
+Posting for document 776 appearing 1 times
+Posting for document 394 appearing 1 times
+Data For: paddy
+Document Frequency: 4
+Posting for document 10630 appearing 1 times
+Posting for document 10515 appearing 1 times
+Posting for document 3291 appearing 2 times
+Posting for document 3205 appearing 1 times
+Data For: Kremlin
+Document Frequency: 148
+Data For: KGB
+Document Frequency: 92
+Data For: Khrushchev
+Document Frequency: 1437

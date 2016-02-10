@@ -45,7 +45,6 @@ public class Main
          docCheck = endDoc.matcher(curLine);
          if(docCheck.find())
          { 
-            System.out.println(curDoc);        
             docProcess(docText.split(" "), curDoc, postingsList);
             curDoc++;
             docText = "";
@@ -113,6 +112,7 @@ public class Main
       int[] tempHolder = new int[2];
       postings = (TreeMap)deserialize(invListBytes);
       data = (LinkedList)postings.get(queryHash);
+      System.out.println("Data For: " + query);
       System.out.println("Document Frequency: "+ data.size());
       if(freqAndPost)
       {
@@ -123,7 +123,7 @@ public class Main
          }
       }
    }
-   
+
    public static byte[] read(String aInputFileName){
     //System.out.println("Reading in binary file named : " + aInputFileName);
       File file = new File(aInputFileName);
